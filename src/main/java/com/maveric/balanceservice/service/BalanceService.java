@@ -11,7 +11,7 @@ public class BalanceService {
     @Autowired
     BalanceRepository balanceRepository;
 
-    public int getBalance(int balanceId) {
+    public int getBalance(String balanceId) {
         Optional<Balance> bal = balanceRepository.findById(balanceId);
         if (bal.isPresent()) {
             Balance AcctBal = bal.get();

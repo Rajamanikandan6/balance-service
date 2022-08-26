@@ -14,7 +14,7 @@ public class BalanceServiceController {
     BalanceService balanceService;
 
     @GetMapping("/accounts/{accountId}/balances/{balanceId}")
-    public ResponseEntity<Object> getBalanceDetails(@PathVariable String accountId , @PathVariable int balanceId) {
+    public ResponseEntity<Object> getBalanceDetails(@PathVariable String accountId , @PathVariable String balanceId) {
         int bal = balanceService.getBalance(balanceId);
         return ResponseEntity.status(HttpStatus.OK).body(bal);
     }
