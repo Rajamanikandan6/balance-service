@@ -17,7 +17,7 @@ public class BalanceServiceController {
     BalanceService balanceService;
 
     @PutMapping("/accounts/{accountId}/balances/{balanceId}")
-    public ResponseEntity<Balance> createBalance(@RequestBody Balance balance, @PathVariable String accountId, @PathVariable int balanceId) {
+    public ResponseEntity<Balance> createBalance(@RequestBody Balance balance, @PathVariable String accountId, @PathVariable String balanceId) {
         balance.setAccountId(accountId);
         Balance balanceDetails = balanceService.updateBalance(balance,balanceId);
         return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);

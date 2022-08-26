@@ -12,7 +12,7 @@ public class BalanceService {
     @Autowired
     BalanceRepository balanceRepository;
 
-    public Balance updateBalance(Balance balance,int balanceId){
+    public Balance updateBalance(Balance balance,String balanceId){
         Optional<Balance> balanceFromDb = balanceRepository.findById(balanceId);
             if(balanceFromDb.isPresent()) {
             Balance newBal = balanceFromDb.get();
