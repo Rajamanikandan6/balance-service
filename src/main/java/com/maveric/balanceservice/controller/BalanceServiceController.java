@@ -16,7 +16,7 @@ public class BalanceServiceController {
     @Autowired
     BalanceService balanceService;
     @GetMapping("/accounts/{accountId}/balances")
-    public ResponseEntity<List<Balance>> deleteBalance(@PathVariable String accountId){
+    public ResponseEntity<List<Balance>> getAllBalance(@PathVariable String accountId){
         List<Balance> balance = balanceService.getAllBalance(accountId);
         return ResponseEntity.status(HttpStatus.OK).body(balance);
     }
