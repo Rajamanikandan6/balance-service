@@ -1,5 +1,8 @@
 package com.maveric.balanceservice.service;
 
+import com.maveric.balanceservice.converter.ModelDtoConverter;
+import com.maveric.balanceservice.dto.BalanceDto;
+import com.maveric.balanceservice.exception.BalanceNotFoundException;
 import com.maveric.balanceservice.model.Balance;
 import com.maveric.balanceservice.repository.BalanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,10 @@ public class BalanceService {
     @Autowired
     BalanceRepository balanceRepository;
 
-    public Balance updateBalance(Balance balance,String balanceId){
+    @Autowired
+    ModelDtoConverter modelDtoConverter;
+
+    public BalanceDto updateBalance(Balance balance, String balanceId){
         Optional<Balance> balanceFromDb = balanceRepository.findById(balanceId);
             if(balanceFromDb.isPresent()) {
             Balance newBal = balanceFromDb.get();
@@ -21,8 +27,10 @@ public class BalanceService {
             newBal.setAmount(balance.getAmount());
 
 
-            return balanceRepository.save(newBal);
-        }
-            return null;
+            return modelDtoConverter.entityToDto(balanceRepository.save(newBal));
+        }else{
+                throw  new BalanceNotFoundException(balanceId);
+            }
+
     }
 }
