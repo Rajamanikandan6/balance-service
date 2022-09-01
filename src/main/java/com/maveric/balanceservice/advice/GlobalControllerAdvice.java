@@ -1,11 +1,12 @@
 package com.maveric.balanceservice.advice;
 
 import com.maveric.balanceservice.dto.Error;
+import com.maveric.balanceservice.exception.BalanceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.maveric.balanceservice.exception.BalanceNotFoundException;
 import com.maveric.balanceservice.constant.ErrorMessageConstants;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException;
@@ -24,6 +25,7 @@ public class GlobalControllerAdvice {
         Error error = getError(userNotFoundException.getMessage(),String.valueOf(HttpStatus.NOT_FOUND.value()));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Error>  handleNullInput(MethodArgumentNotValidException methodArgumentNotValidException){
