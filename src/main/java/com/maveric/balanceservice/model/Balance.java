@@ -3,18 +3,19 @@ package com.maveric.balanceservice.model;
 import com.maveric.balanceservice.constant.Currency;
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.util.Date;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
 @Document(collection = "balance")
 public class Balance {
+
     @Id
     private String id;
 

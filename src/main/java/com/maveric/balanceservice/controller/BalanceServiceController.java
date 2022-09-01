@@ -23,5 +23,10 @@ public class BalanceServiceController {
         BalanceDto balanceDetails = balanceService.updateBalance(balance,balanceId);
         return ResponseEntity.status(HttpStatus.OK).body(balanceDetails);
     }
+    @PostMapping("/accounts/{accountId}/balances")
+    public ResponseEntity<BalanceDto> createBalance(@Valid @RequestBody Balance balance, @PathVariable String accountId) {
+        BalanceDto balanceDetails = balanceService.createBalance(balance);
+        return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
+    }
 
 }

@@ -31,6 +31,9 @@ public class BalanceService {
         }else{
                 throw  new BalanceNotFoundException(balanceId);
             }
+    }
+    public BalanceDto createBalance(Balance balance){
 
+       return modelDtoConverter.entityToDto(balanceRepository.save(balance));
     }
 }
