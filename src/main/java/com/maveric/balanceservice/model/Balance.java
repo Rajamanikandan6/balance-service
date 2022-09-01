@@ -1,23 +1,39 @@
 package com.maveric.balanceservice.model;
 
+import com.maveric.balanceservice.constant.Currency;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+
 
 @Getter
 @Setter
-@Entity
-@Table(name = "balance")
+@Document(collection = "balance")
 public class Balance {
     @Id
     private String id;
 
+    @NotNull
+    @NotBlank
     private String accountId;
 
-    private int amount;
+    @NotNull
+    @NotBlank
+    private String amount;
 
-    private String currency;
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt = new Date();
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt = new Date();
 }
