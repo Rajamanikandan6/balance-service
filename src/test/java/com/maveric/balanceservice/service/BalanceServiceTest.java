@@ -12,8 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
     @Mock
     private BalanceRepository mockedBalanceRepository;
+
+    @Mock
+    private ModelDtoConverter modelDtoConverter;
 
     @InjectMocks
     private BalanceService balanceService;
@@ -35,6 +36,28 @@ import static org.junit.jupiter.api.Assertions.*;
         Optional<Balance> balance = mockedBalanceRepository.findById("631061c4c45f78545a1ed042");
         assertNotNull(balance);
         assertSame(balance.get().getAccountId(),getSampleBalance().getAccountId());
+    }
+    @Test
+    void shouldReturnUserWhenUpdateBalanceInvoked() throws Exception {
+        when(mockedBalanceRepository.findById("631061c4c45f78545a1ed042")).thenReturn(Optional.ofNullable(getSampleBalance()));
+        when(modelDtoConverter.entityToDto(mockedBalanceRepository.save(getSampleBalance()))).thenReturn(getSampleDtoBalance());
+
+        BalanceDto balance = balanceService.updateBalance(getSampleBalance(),"631061c4c45f78545a1ed042");
+        assertNotNull(balance);
+        assertSame(balance.getAccountId(),getSampleBalance().getAccountId());
+
+    }
+
+    @Test
+    void shouldReturnUserWhenCreateBalanceInvoked() throws Exception {
+        when(mockedBalanceRepository.save(any(Balance.class))).thenReturn(getSampleBalance());
+        when(modelDtoConverter.entityToDto(any(Balance.class))).thenReturn(getSampleDtoBalance());
+
+        BalanceDto balance = balanceService.createBalance(getSampleBalance());
+
+        assertNotNull(balance);
+        assertSame(balance.getAccountId(),getSampleBalance().getAccountId());
+
     }
 
     public Balance getSampleBalance(){

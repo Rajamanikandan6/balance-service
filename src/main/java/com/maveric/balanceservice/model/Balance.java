@@ -11,11 +11,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-
 @Getter
 @Setter
 @Document(collection = "balance")
 public class Balance {
+
     @Id
     private String id;
 
@@ -36,4 +36,5 @@ public class Balance {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt = new Date();
+
 }
