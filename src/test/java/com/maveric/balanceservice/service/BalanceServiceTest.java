@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
     @Test
-    void shouldReturnUserWhenGetUserInvoked() throws Exception {
+    void shouldReturnUserWhenGetBalanceInvoked() throws Exception {
         when(mockedBalanceRepository.findById("631061c4c45f78545a1ed042")).thenReturn(Optional.of(getSampleBalance()));
 
         Optional<Balance> balance = mockedBalanceRepository.findById("631061c4c45f78545a1ed042");
@@ -58,6 +59,17 @@ import static org.junit.jupiter.api.Assertions.*;
         assertNotNull(balance);
         assertSame(balance.getAccountId(),getSampleBalance().getAccountId());
 
+    }
+
+    @Test
+    void shouldReturnMessageWhenDeleteBalanceInvoked() throws Exception {
+        when(mockedBalanceRepository.findById("631061c4c45f78545a1ed042")).thenReturn(Optional.of(getSampleBalance()));
+        willDoNothing().given(mockedBalanceRepository).deleteById("631061c4c45f78545a1ed042");
+
+        String message = balanceService.deleteBalance("631061c4c45f78545a1ed042");
+
+        assertNotNull(message);
+        assertSame(message , "Balance Deleted Successfully");
     }
 
     public Balance getSampleBalance(){

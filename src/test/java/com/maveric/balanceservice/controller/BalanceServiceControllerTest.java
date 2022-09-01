@@ -39,6 +39,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
     private BalanceRepository balanceRepository;
 
     @Test
+    void shouldGetUserWhenRequestMadeToGetBalance() throws Exception {
+        mvc.perform(get(API_V1_BALANCE + "?page=0&pageSize=10"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    void shouldReturnInternalServerWhenDbReturnsErrorForGetBalances() throws Exception{
+        when(balanceService.getAllBalance("1",0,10)).thenThrow(new IllegalArgumentException());
+        mvc.perform(get(API_V1_BALANCE+"?page=0&pageSize=10"))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+    @Test
     void shouldDeleteBalanceWhenRequestMadeToDeleteBalace() throws Exception{
         mvc.perform(delete(API_V1_BALANCE+"/631061c4c45f78545a1ed042"))
                 .andExpect(status().isOk())
