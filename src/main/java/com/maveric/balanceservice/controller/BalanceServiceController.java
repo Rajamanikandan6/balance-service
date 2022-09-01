@@ -17,6 +17,12 @@ public class BalanceServiceController {
     @Autowired
     BalanceService balanceService;
 
+    @PutMapping("/accounts/{accountId}/balances/{balanceId}")
+    public ResponseEntity<BalanceDto> updateBalance(@Valid @RequestBody Balance balance, @PathVariable String accountId, @PathVariable String balanceId) {
+        balance.setAccountId(accountId);
+        BalanceDto balanceDetails = balanceService.updateBalance(balance,balanceId);
+        return ResponseEntity.status(HttpStatus.OK).body(balanceDetails);
+    }
     @PostMapping("/accounts/{accountId}/balances")
     public ResponseEntity<BalanceDto> createBalance(@Valid @RequestBody Balance balance, @PathVariable String accountId) {
         BalanceDto balanceDetails = balanceService.createBalance(balance);

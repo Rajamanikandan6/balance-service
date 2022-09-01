@@ -11,12 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
  class BalanceServiceTest {
+
     @Mock
     private BalanceRepository mockedBalanceRepository;
 
@@ -26,6 +28,17 @@ import static org.junit.jupiter.api.Assertions.*;
     @InjectMocks
     private BalanceService balanceService;
 
+
+    @Test
+    void shouldReturnUserWhenUpdateBalanceInvoked() throws Exception {
+        when(mockedBalanceRepository.findById("631061c4c45f78545a1ed042")).thenReturn(Optional.ofNullable(getSampleBalance()));
+        when(modelDtoConverter.entityToDto(mockedBalanceRepository.save(getSampleBalance()))).thenReturn(getSampleDtoBalance());
+
+        BalanceDto balance = balanceService.updateBalance(getSampleBalance(),"631061c4c45f78545a1ed042");
+        assertNotNull(balance);
+        assertSame(balance.getAccountId(),getSampleBalance().getAccountId());
+
+    }
 
     @Test
     void shouldReturnUserWhenCreateBalanceInvoked() throws Exception {
@@ -54,5 +67,4 @@ import static org.junit.jupiter.api.Assertions.*;
         balanceDto.setAmount("200");
         return balanceDto;
     }
-
 }

@@ -1,4 +1,5 @@
 package com.maveric.balanceservice.controller;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maveric.balanceservice.constant.Currency;
 import com.maveric.balanceservice.dto.BalanceDto;
@@ -13,17 +14,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-
-
 @WebMvcTest(BalanceServiceController.class)
 @Tag("Integration tests")
  class BalanceServiceControllerTest {
+
     private static final String API_V1_BALANCE = "/api/v1/accounts/1/balances";
 
     @Autowired
@@ -38,6 +39,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
     private BalanceRepository balanceRepository;
 
     @Test
+    void shouldUpdateBalanceWhenRequestMadeToUpdateBalance() throws Exception{
+        mvc.perform(put(API_V1_BALANCE+"/631061c4c45f78545a1ed042").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(getSampleBalance())))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+    @Test
     void shouldCreateBalanceWhenRequestMadeToCreateBalance() throws Exception{
         mvc.perform(post(API_V1_BALANCE).contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(getSampleBalance())))
                 .andExpect(status().isCreated())
@@ -45,7 +52,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
     }
 
     @Test
-    void shouldThrowBadRequestWhenBalanceDetailsAreWrong() throws Exception{
+    void shouldThrowBadRequestWhenBalanceDetailsAreWrongForUpdate() throws Exception{
+        Balance balance = new Balance();
+        balance.setCurrency(Currency.INR);
+        balance.setAccountId(null);
+        balance.setAmount("200");
+        mvc.perform(put(API_V1_BALANCE+"/631061c4c45f78545a1ed042").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(balance)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    void shouldThrowBadRequestWhenBalanceDetailsAreWrongForCreate() throws Exception{
         Balance balance = new Balance();
         balance.setCurrency(Currency.INR);
         balance.setAccountId(null);
@@ -56,7 +74,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
     }
 
     @Test
-    void shouldReturnInternalServerWhenDbReturnsError() throws Exception{
+    void shouldReturnInternalServerWhenDbReturnsErrorForUpdate() throws Exception{
+        when(balanceService.updateBalance(Mockito.any(Balance.class),eq("631061c4c45f78545a1ed042"))).thenThrow(new IllegalArgumentException());
+        mvc.perform(post(API_V1_BALANCE+"/631061c4c45f78545a1ed042").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(getSampleBalance())))
+                .andExpect(status().isInternalServerError())
+                .andDo(print());
+
+    }
+    @Test
+    void shouldReturnInternalServerWhenDbReturnsErrorForCreate() throws Exception{
         when(balanceService.createBalance(Mockito.any(Balance.class))).thenThrow(new IllegalArgumentException());
         mvc.perform(post(API_V1_BALANCE).contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(getSampleBalance())))
                 .andExpect(status().isInternalServerError())
@@ -66,11 +92,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 
     public Balance getSampleBalance(){
+
        Balance balance = new Balance();
        balance.setCurrency(Currency.INR);
        balance.setAccountId("1");
        balance.setAmount("200");
         return balance;
     }
-
 }

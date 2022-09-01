@@ -13,7 +13,6 @@ import java.util.Date;
 
 @Getter
 @Setter
-@Entity
 @Document(collection = "balance")
 public class Balance {
 
