@@ -13,9 +13,9 @@ import java.util.Date;
 
 @Getter
 @Setter
-@Entity
 @Document(collection = "balance")
 public class Balance {
+
     @Id
     private String id;
 
@@ -36,4 +36,5 @@ public class Balance {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt = new Date();
+
 }
