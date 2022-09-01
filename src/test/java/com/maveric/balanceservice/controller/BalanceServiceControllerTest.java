@@ -1,19 +1,19 @@
 package com.maveric.balanceservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maveric.balanceservice.exception.BalanceNotFoundException;
 import com.maveric.balanceservice.constant.Currency;
-import com.maveric.balanceservice.dto.BalanceDto;
 import com.maveric.balanceservice.model.Balance;
 import com.maveric.balanceservice.repository.BalanceRepository;
 import com.maveric.balanceservice.service.BalanceService;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.Mockito;
+import org.springframework.http.MediaType;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -38,6 +38,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
     @MockBean
     private BalanceRepository balanceRepository;
 
+    @Test
+    void shouldDeleteBalanceWhenRequestMadeToDeleteBalace() throws Exception{
+        mvc.perform(delete(API_V1_BALANCE+"/631061c4c45f78545a1ed042"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+    }
+    @Test
+    void shouldReturnInternalServerWhenDbReturnsErrorForDelete() throws Exception{
+        when(balanceService.deleteBalance("631061c4c45f78545a1ed04")).thenThrow(new BalanceNotFoundException("631061c4c45f78545a1ed04"));
+        mvc.perform(delete(API_V1_BALANCE+"/631061c4c45f78545a1ed04"))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+
+    }
     @Test
     void shouldUpdateBalanceWhenRequestMadeToUpdateBalance() throws Exception{
         mvc.perform(put(API_V1_BALANCE+"/631061c4c45f78545a1ed042").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(getSampleBalance())))

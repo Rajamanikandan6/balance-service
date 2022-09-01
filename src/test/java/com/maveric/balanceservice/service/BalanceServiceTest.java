@@ -30,6 +30,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
     @Test
+    void shouldReturnUserWhenGetUserInvoked() throws Exception {
+        when(mockedBalanceRepository.findById("631061c4c45f78545a1ed042")).thenReturn(Optional.of(getSampleBalance()));
+
+        Optional<Balance> balance = mockedBalanceRepository.findById("631061c4c45f78545a1ed042");
+        assertNotNull(balance);
+        assertSame(balance.get().getAccountId(),getSampleBalance().getAccountId());
+    }
+    @Test
     void shouldReturnUserWhenUpdateBalanceInvoked() throws Exception {
         when(mockedBalanceRepository.findById("631061c4c45f78545a1ed042")).thenReturn(Optional.ofNullable(getSampleBalance()));
         when(modelDtoConverter.entityToDto(mockedBalanceRepository.save(getSampleBalance()))).thenReturn(getSampleDtoBalance());
