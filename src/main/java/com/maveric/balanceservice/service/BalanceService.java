@@ -1,6 +1,5 @@
 package com.maveric.balanceservice.service;
 
-
 import com.maveric.balanceservice.converter.ModelDtoConverter;
 import com.maveric.balanceservice.dto.BalanceDto;
 import com.maveric.balanceservice.model.Balance;
@@ -9,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import com.maveric.balanceservice.constant.SuccessMessageConstant;
+import com.maveric.balanceservice.exception.BalanceNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BalanceService {
@@ -27,4 +29,29 @@ public class BalanceService {
         return modelDtoConverter.entityToDto(listBalance);
     }
 
+
+    public String deleteBalance(String balanceId){
+        balanceRepository.findById(balanceId).orElseThrow(() -> new BalanceNotFoundException(balanceId));
+        balanceRepository.deleteById(balanceId);
+        return SuccessMessageConstant.DELETE_SUCCESS_MESSAGE;
+    }
+
+    public BalanceDto updateBalance(Balance balance, String balanceId){
+        Optional<Balance> balanceFromDb = balanceRepository.findById(balanceId);
+            if(balanceFromDb.isPresent()) {
+            Balance newBal = balanceFromDb.get();
+            newBal.setAccountId(balance.getAccountId());
+            newBal.setCurrency(balance.getCurrency());
+            newBal.setAmount(balance.getAmount());
+
+
+            return modelDtoConverter.entityToDto(balanceRepository.save(newBal));
+        }else{
+                throw  new BalanceNotFoundException(balanceId);
+            }
+    }
+    public BalanceDto createBalance(Balance balance){
+
+       return modelDtoConverter.entityToDto(balanceRepository.save(balance));
+    }
 }

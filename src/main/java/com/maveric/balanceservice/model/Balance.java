@@ -3,6 +3,7 @@ package com.maveric.balanceservice.model;
 import com.maveric.balanceservice.constant.Currency;
 import lombok.Getter;
 import lombok.Setter;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Setter
 @Document(collection = "balance")
 public class Balance {
+
     @Id
     private String id;
 
@@ -34,4 +36,5 @@ public class Balance {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt = new Date();
+
 }

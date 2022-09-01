@@ -1,4 +1,5 @@
 package com.maveric.balanceservice.dto;
+
 import com.maveric.balanceservice.constant.Currency;
 import lombok.Data;
 
