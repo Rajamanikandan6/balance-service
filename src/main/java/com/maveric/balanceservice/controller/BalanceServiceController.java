@@ -36,8 +36,8 @@ public class BalanceServiceController {
     }
 
     @DeleteMapping("/accounts/{accountId}/balances/{balanceId}")
-    public ResponseEntity<Object> deleteBalance(@PathVariable String balanceId){
-        String desc = balanceService.deleteBalance(balanceId);
+    public ResponseEntity<Object> deleteBalance(@PathVariable String balanceId ,@PathVariable String accountId){
+        String desc = balanceService.deleteBalance(balanceId,accountId);
         return ResponseEntity.status(HttpStatus.OK).body(desc);
     }
 

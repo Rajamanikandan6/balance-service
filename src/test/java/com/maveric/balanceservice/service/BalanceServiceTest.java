@@ -32,6 +32,9 @@ import static org.junit.jupiter.api.Assertions.*;
     @Mock
     private ModelDtoConverter modelDtoConverter;
 
+    @Mock
+    private Page page;
+
     @InjectMocks
     private BalanceService balanceService;
 
@@ -50,12 +53,10 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     void shouldReturnBalancesWhenGetBalancesInvoked() throws Exception {
         Page<Balance> pageResponse = new PageImpl<>(Arrays.asList(getSampleBalance(),getSampleBalance()));
-        when(mockedBalanceRepository.findAllByAccountId(any(Pageable.class),eq("1"))).thenReturn(pageResponse);
-        when(pageResponse.hasContent()).thenReturn(true);
-        when(pageResponse.getContent()).thenReturn(Arrays.asList(getSampleBalance(),getSampleBalance()));
-        when(modelDtoConverter.entityToDto(any(Balance.class))).thenReturn((BalanceDto) Arrays.asList(getSampleDtoBalance(),getSampleDtoBalance()));
+        when(mockedBalanceRepository.findAllByAccountId(any(Pageable.class),any())).thenReturn(pageResponse);
+        when(modelDtoConverter.entityToDtoList(any())).thenReturn(Arrays.asList(getSampleDtoBalance(),getSampleDtoBalance()));
 
-        List<BalanceDto> balance = balanceService.getAllBalance("1",10,1);
+        List<BalanceDto> balance = balanceService.getAllBalance("1",1,10);
         assertNotNull(balance);
         assertSame(Currency.INR,balance.get(0).getCurrency());
     }
@@ -84,13 +85,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
     @Test
     void shouldReturnMessageWhenDeleteBalanceInvoked() throws Exception {
-        when(mockedBalanceRepository.findById("631061c4c45f78545a1ed042")).thenReturn(Optional.of(getSampleBalance()));
+        when(mockedBalanceRepository.findByAccountIdAndBalanceId("631061c4c45f78545a1ed042","1")).thenReturn(Optional.of(getSampleBalance()));
         willDoNothing().given(mockedBalanceRepository).deleteById("631061c4c45f78545a1ed042");
 
-        String message = balanceService.deleteBalance("631061c4c45f78545a1ed042");
+        String message = balanceService.deleteBalance("631061c4c45f78545a1ed042","1");
 
         assertNotNull(message);
-        assertSame(message , "Balance Deleted Successfully");
+        assertSame( "Balance Deleted Successfully",message );
     }
     public Balance getSampleBalance(){
         Balance balance = new Balance();

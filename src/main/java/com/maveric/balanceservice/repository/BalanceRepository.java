@@ -17,7 +17,7 @@ public interface BalanceRepository extends MongoRepository<Balance,String> {
     @Query("{accountId:?0}")
     Page<Balance> findAllByAccountId(Pageable pageable, String accountId);
 
-    @Query("{Id:?0,accountId:?1}")
+    @Query("{'_id':?0,'accountId':?1}")
     Optional<Balance> findByAccountIdAndBalanceId(String balanceId,String accountId);
 
 }

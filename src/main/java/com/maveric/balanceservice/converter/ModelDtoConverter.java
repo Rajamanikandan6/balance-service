@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 public class ModelDtoConverter {
-    public List<BalanceDto> entityToDto(List<Balance> user) {
+    public List<BalanceDto> entityToDtoList(List<Balance> user) {
         List<BalanceDto> balanceDto = new ArrayList<>();
         user.stream().forEach(b -> {
             BalanceDto singleBalace = new BalanceDto();

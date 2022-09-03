@@ -36,12 +36,12 @@ public class BalanceService {
 
         Page<Balance> balances = balanceRepository.findAllByAccountId(PageRequest.of(page, pageSize),accountId);
         List<Balance> listBalance = balances.getContent();
-        return modelDtoConverter.entityToDto(listBalance);
+        return modelDtoConverter.entityToDtoList(listBalance);
     }
 
 
-    public String deleteBalance(String balanceId){
-        balanceRepository.findById(balanceId).orElseThrow(() -> new BalanceNotFoundException(balanceId));
+    public String deleteBalance(String balanceId,String accountId){
+        balanceRepository.findByAccountIdAndBalanceId(balanceId,accountId).orElseThrow(() -> new BalanceNotFoundException(balanceId));
         balanceRepository.deleteById(balanceId);
         return SuccessMessageConstant.DELETE_SUCCESS_MESSAGE;
     }

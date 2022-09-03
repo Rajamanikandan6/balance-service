@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @Getter
@@ -19,12 +19,13 @@ public class Balance {
     @Id
     private String id;
 
-    @NotNull
+
     @NotBlank
     private String accountId;
 
-    @NotNull
+
     @NotBlank
+    @Pattern(regexp = "^[+]?(\\d+\\.?\\d*|\\.\\d+)$",message = "Invalid amount given")
     private String amount;
 
     @Enumerated(EnumType.STRING)
@@ -34,6 +35,7 @@ public class Balance {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();
 
+    @Column(updatable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt = new Date();
 

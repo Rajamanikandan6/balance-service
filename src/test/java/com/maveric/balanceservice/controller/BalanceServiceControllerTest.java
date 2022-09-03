@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Tag("Integration tests")
  class BalanceServiceControllerTest {
 
-    private static final String API_V1_BALANCE = "/api/v1/accounts/1/balances";
+    private static final String API_V1_BALANCE = "/api/v1/accounts/4/balances";
 
     @Autowired
     MockMvc mvc;
@@ -55,8 +56,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
     @Test
     void shouldReturnInternalServerWhenDbReturnsErrorForGetBalances() throws Exception{
-        when(balanceService.getAllBalance("1",0,10)).thenThrow(new IllegalArgumentException());
-        mvc.perform(get(API_V1_BALANCE+"?page=0&pageSize=10"))
+       doThrow(new IllegalArgumentException()).when(balanceService.getAllBalance(any(),any(),any()));
+        mvc.perform(get(API_V1_BALANCE+"?page=1&pageSize=10"))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
@@ -70,7 +71,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
     @Test
     void shouldReturnInternalServerWhenDbReturnsErrorForBalance() throws Exception{
-        when(balanceService.getBalance("631061c4c45f78545a1ed04","1")).thenThrow(new BalanceNotFoundException("631061c4c45f78545a1ed042"));
+        when(balanceService.getBalance(any(),any())).thenThrow(new BalanceNotFoundException("631061c4c45f78545a1ed042"));
         mvc.perform(get(API_V1_BALANCE+"/631061c4c45f78545a1ed04","1"))
                 .andExpect(status().isNotFound())
                 .andDo(print());
@@ -78,7 +79,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
     }
     @Test
     void shouldReturnInternalServerWhenDbReturnsErrorForDelete() throws Exception{
-        when(balanceService.deleteBalance("631061c4c45f78545a1ed04")).thenThrow(new BalanceNotFoundException("631061c4c45f78545a1ed04"));
+        when(balanceService.deleteBalance(any(),any())).thenThrow(new BalanceNotFoundException("631061c4c45f78545a1ed04"));
         mvc.perform(delete(API_V1_BALANCE+"/631061c4c45f78545a1ed04"))
                 .andExpect(status().isNotFound())
                 .andDo(print());
