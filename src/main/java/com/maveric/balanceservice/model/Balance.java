@@ -1,6 +1,7 @@
 package com.maveric.balanceservice.model;
 
 import com.maveric.balanceservice.constant.Currency;
+import com.maveric.balanceservice.validation.CurrencyValidation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +30,7 @@ public class Balance {
     private String amount;
 
     @Enumerated(EnumType.STRING)
+    @CurrencyValidation(anyOfTheseCurrency = {Currency.INR, Currency.EURO,Currency.DOLLER})
     private Currency currency;
 
     @Column(updatable = false)

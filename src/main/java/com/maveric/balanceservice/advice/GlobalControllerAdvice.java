@@ -20,8 +20,8 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(BalanceNotFoundException.class)
-    public ResponseEntity<Error>  handleNullInput(BalanceNotFoundException userNotFoundException){
-        Error error = getError(userNotFoundException.getMessage(),String.valueOf(HttpStatus.NOT_FOUND.value()));
+    public ResponseEntity<Error>  balanceNotFound(BalanceNotFoundException balanceNotFoundException){
+        Error error = getError(balanceNotFoundException.getMessage(),String.valueOf(HttpStatus.NOT_FOUND.value()));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
@@ -37,6 +37,8 @@ public class GlobalControllerAdvice {
         Error error = getError(String.valueOf(serviceUnavailable.getMessage()),String.valueOf(HttpStatus.SERVICE_UNAVAILABLE));
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
     }
+
+
 
     private Error getError(String message , String code){
         Error error = new Error();
