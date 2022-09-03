@@ -10,12 +10,15 @@ public class CurrencyValidatorImplementation implements ConstraintValidator<Curr
 
     private Currency[] allCurrencyValue;
 
-    public CurrencyValidatorImplementation(CurrencyValidation currencyValidation) {
-        this.allCurrencyValue = currencyValidation.anyOfTheseCurrency();
+    @Override
+    public void initialize(CurrencyValidation constraintAnnotation) {
+        this.allCurrencyValue = constraintAnnotation.anyOfTheseCurrency();
     }
 
     @Override
     public boolean isValid(Currency currency, ConstraintValidatorContext constraintValidatorContext) {
-        return currency == null || Arrays.asList(allCurrencyValue).contains(allCurrencyValue);
+        return currency == null || Arrays.asList(allCurrencyValue).contains(currency);
     }
+
+
 }
