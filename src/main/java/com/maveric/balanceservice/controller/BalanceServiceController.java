@@ -32,7 +32,7 @@ public class BalanceServiceController {
     @GetMapping("/accounts/{accountId}/balances/{balanceId}")
     public ResponseEntity<Object> getBalanceDetails(@PathVariable String accountId , @PathVariable String balanceId,@RequestHeader(value = "userId") String userId) {
         List<Account> account = null;
-        ResponseEntity<List<Account>> accountList = accountFeignService.getAccounts(userId);
+        ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
         account = accountList.getBody();
         balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
         String bal = balanceService.getBalance(balanceId,accountId);
@@ -60,5 +60,15 @@ public class BalanceServiceController {
     public ResponseEntity<BalanceDto> createBalance(@Valid @RequestBody Balance balance, @PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
         BalanceDto balanceDetails = balanceService.createBalance(balance);
         return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
+    }
+
+    @GetMapping("accounts/{accountId}/accountBalance")
+    public ResponseEntity<List<BalanceDto>> getBalanceDetails(@PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
+        List<Account> account = null;
+        ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
+        account = accountList.getBody();
+        balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
+        List<BalanceDto> balanceDto = balanceService.getBalanceForPerticularAccount(accountId);
+        return ResponseEntity.status(HttpStatus.OK).body(balanceDto);
     }
 }

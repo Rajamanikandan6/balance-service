@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(value = "feignUser",url = "http://localhost:3010/api/v1/")
+@FeignClient(value = "feignAccount",url = "http://localhost:3010/api/v1/")
 public interface AccountFeignService {
-    @GetMapping("/customers/{customerId}/accounts")
-    ResponseEntity<List<Account>> getAccounts(@PathVariable String customerId);
+    @GetMapping("/customers/{customerId}/customerAccounts")
+    ResponseEntity<List<Account>> getAccountsbyId(@PathVariable String customerId);
 }

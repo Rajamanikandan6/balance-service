@@ -7,6 +7,8 @@ import java.util.Date;
 
 @Data
 public class Account {
+    private String _id;
+
     private Type type;
 
     private String customerId;

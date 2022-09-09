@@ -1,5 +1,6 @@
 package com.maveric.balanceservice.service;
 
+import com.maveric.balanceservice.BalanceServiceApplication;
 import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.exception.BalanceNotFoundException;
 import com.maveric.balanceservice.model.Account;
@@ -73,12 +74,20 @@ public class BalanceService {
     public void findAccountIdBelongsToCurrentUser(List<Account> account,String account_id){
         AtomicInteger count = new AtomicInteger(0);
         account.forEach((singleAccount) -> {
-            if (singleAccount.getCustomerId() == account_id){
+            System.out.println(singleAccount);
+            if (singleAccount.get_id().equals(account_id)){
+                System.out.println("Testing");
                 count.getAndIncrement();
             }
         });
+        System.out.println(count.get());
         if(count.get() == 0){
             throw new AccountIdMismatchException(account_id);
         }
+    }
+    public List<BalanceDto> getBalanceForPerticularAccount(String accountId){
+        List<Balance> balances = balanceRepository.findAllByAccountId(accountId);
+        return modelDtoConverter.entityToDtoList(balances);
+
     }
 }

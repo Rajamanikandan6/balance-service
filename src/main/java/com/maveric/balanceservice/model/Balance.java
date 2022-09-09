@@ -30,7 +30,7 @@ public class Balance {
     private String amount;
 
     @Enumerated(EnumType.STRING)
-    @CurrencyValidation(anyOfTheseCurrency = {Currency.INR, Currency.EURO,Currency.DOLLER})
+    @CurrencyValidation(anyOfTheseCurrency = {Currency.INR, Currency.EURO,Currency.DOLLAR})
     private Currency currency;
 
     @Column(updatable = false)
