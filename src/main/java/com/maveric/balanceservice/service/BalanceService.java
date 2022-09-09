@@ -1,6 +1,8 @@
 package com.maveric.balanceservice.service;
 
+import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.exception.BalanceNotFoundException;
+import com.maveric.balanceservice.model.Account;
 import com.maveric.balanceservice.model.Balance;
 import com.maveric.balanceservice.repository.BalanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import com.maveric.balanceservice.constant.SuccessMessageConstant;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Service
 public class BalanceService {
     @Autowired
@@ -64,5 +68,17 @@ public class BalanceService {
     public BalanceDto createBalance(Balance balance){
 
        return modelDtoConverter.entityToDto(balanceRepository.save(balance));
+    }
+
+    public void findAccountIdBelongsToCurrentUser(List<Account> account,String account_id){
+        AtomicInteger count = new AtomicInteger(0);
+        account.forEach((singleAccount) -> {
+            if (singleAccount.getCustomerId() == account_id){
+                count.getAndIncrement();
+            }
+        });
+        if(count.get() == 0){
+            throw new AccountIdMismatchException(account_id);
+        }
     }
 }

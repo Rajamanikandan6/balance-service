@@ -1,6 +1,7 @@
 package com.maveric.balanceservice.advice;
 
 import com.maveric.balanceservice.dto.Error;
+import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.exception.BalanceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(BalanceNotFoundException.class)
     public ResponseEntity<Error>  balanceNotFound(BalanceNotFoundException balanceNotFoundException){
         Error error = getError(balanceNotFoundException.getMessage(),String.valueOf(HttpStatus.NOT_FOUND.value()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(AccountIdMismatchException.class)
+    public ResponseEntity<Error>  accountUserMismatch(AccountIdMismatchException accountIdMismatchException){
+        Error error = getError(accountIdMismatchException.getMessage(),String.valueOf(HttpStatus.NOT_FOUND.value()));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
