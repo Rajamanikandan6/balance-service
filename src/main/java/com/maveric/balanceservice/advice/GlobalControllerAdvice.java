@@ -5,6 +5,7 @@ import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.exception.BalanceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,6 +44,12 @@ public class GlobalControllerAdvice {
     public ResponseEntity<Error>  serviceUnavailable(HttpServerErrorException.ServiceUnavailable serviceUnavailable){
         Error error = getError(String.valueOf(serviceUnavailable.getMessage()),String.valueOf(HttpStatus.SERVICE_UNAVAILABLE));
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Error>  handleEnumException(HttpMessageNotReadableException httpMessageNotReadableException){
+        Error error = getError(httpMessageNotReadableException.getMessage(),String.valueOf(HttpStatus.BAD_REQUEST));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
 
