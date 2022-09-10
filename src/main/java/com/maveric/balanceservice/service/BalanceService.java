@@ -55,9 +55,10 @@ public class BalanceService {
         Optional<Balance> balanceFromDb = balanceRepository.findById(balanceId);
             if(balanceFromDb.isPresent()) {
             Balance newBal = balanceFromDb.get();
+            String newAmount =Integer.toString(Integer.parseInt(balance.getAmount()) + Integer.parseInt(newBal.getAmount()));
             newBal.setAccountId(balance.getAccountId());
             newBal.setCurrency(balance.getCurrency());
-            newBal.setAmount(balance.getAmount());
+            newBal.setAmount(newAmount);
 
 
             return modelDtoConverter.entityToDto(balanceRepository.save(newBal));
@@ -73,14 +74,11 @@ public class BalanceService {
 
     public void findAccountIdBelongsToCurrentUser(List<Account> account,String account_id){
         AtomicInteger count = new AtomicInteger(0);
-        account.forEach((singleAccount) -> {
-            System.out.println(singleAccount);
+        account.forEach(singleAccount -> {
             if (singleAccount.get_id().equals(account_id)){
-                System.out.println("Testing");
                 count.getAndIncrement();
             }
         });
-        System.out.println(count.get());
         if(count.get() == 0){
             throw new AccountIdMismatchException(account_id);
         }
