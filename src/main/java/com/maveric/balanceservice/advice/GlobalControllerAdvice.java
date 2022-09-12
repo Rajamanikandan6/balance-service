@@ -1,5 +1,6 @@
 package com.maveric.balanceservice.advice;
 
+import com.maveric.balanceservice.constant.ErrorMessageConstants;
 import com.maveric.balanceservice.dto.Error;
 import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.exception.BalanceAlreadyExistException;
@@ -55,7 +56,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Error>  handleEnumException(HttpMessageNotReadableException httpMessageNotReadableException){
-        Error error = getError(httpMessageNotReadableException.getMessage(),String.valueOf(HttpStatus.BAD_REQUEST));
+        Error error = getError(ErrorMessageConstants.CURRENCY_ERROR,String.valueOf(HttpStatus.BAD_REQUEST));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 

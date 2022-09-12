@@ -1,6 +1,7 @@
 package com.maveric.balanceservice.controller;
 
 import com.maveric.balanceservice.dto.BalanceDto;
+import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.feignclient.AccountFeignService;
 import com.maveric.balanceservice.model.Account;
 import com.maveric.balanceservice.model.Balance;
@@ -35,8 +36,8 @@ public class BalanceServiceController {
         ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
         account = accountList.getBody();
         balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
-        String bal = balanceService.getBalance(balanceId,accountId);
-        return ResponseEntity.status(HttpStatus.OK).body(bal);
+        String balance = balanceService.getBalance(balanceId,accountId);
+        return ResponseEntity.status(HttpStatus.OK).body(balance);
     }
     @GetMapping("/accounts/{accountId}/balances")
     public ResponseEntity<List<BalanceDto>> getAllBalance(@PathVariable String accountId, @RequestParam int page , @RequestParam int pageSize,@RequestHeader(value = "userId") String userId){
@@ -60,37 +61,50 @@ public class BalanceServiceController {
 
     @PutMapping("/accounts/{accountId}/balances/{balanceId}")
     public ResponseEntity<BalanceDto> updateBalance(@Valid @RequestBody Balance balance, @PathVariable String accountId, @PathVariable String balanceId,@RequestHeader(value = "userId") String userId) {
-        List<Account> account = null;
-        ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
-        account = accountList.getBody();
-        balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
-        balance.setAccountId(accountId);
-        BalanceDto balanceDetails = balanceService.updateBalance(balance,balanceId);
-        return ResponseEntity.status(HttpStatus.OK).body(balanceDetails);
+        if(balance.getAccountId().equals(accountId)) {
+            List<Account> account = null;
+            ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
+            account = accountList.getBody();
+            balanceService.findAccountIdBelongsToCurrentUser(account, accountId);
+            balance.setAccountId(accountId);
+            BalanceDto balanceDetails = balanceService.updateBalance(balance, balanceId);
+            return ResponseEntity.status(HttpStatus.OK).body(balanceDetails);
+        }else{
+            throw new AccountIdMismatchException(accountId,"account id in url and request body should be same");
+        }
     }
     @PostMapping("/accounts/{accountId}/balances")
     public ResponseEntity<BalanceDto> createBalance(@Valid @RequestBody Balance balance, @PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
-        List<Account> account = null;
-        ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
-        account = accountList.getBody();
-        System.out.println(account);
-        balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
-        BalanceDto balanceDetails = balanceService.createBalance(balance);
-        return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
+        if(balance.getAccountId().equals(accountId)) {
+            List<Account> account = null;
+            ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
+            account = accountList.getBody();
+            System.out.println(account);
+            balanceService.findAccountIdBelongsToCurrentUser(account, accountId);
+            BalanceDto balanceDetails = balanceService.createBalance(balance);
+            return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
+        }
+        else{
+            throw new AccountIdMismatchException(accountId,"account id in url and request body should be same");
+        }
     }
 
     @PostMapping("/accounts/{accountId}/balances/balancesAccount")
     public ResponseEntity<BalanceDto> createBalanceForAccount(@Valid @RequestBody Balance balance, @PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
-        List<Account> account = null;
-        ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
-        account = accountList.getBody();
-        balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
-        BalanceDto balanceDetails = balanceService.createBalanceForAccount(balance);
-        return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
+        if(balance.getAccountId().equals(accountId)) {
+            List<Account> account = null;
+            ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
+            account = accountList.getBody();
+            balanceService.findAccountIdBelongsToCurrentUser(account, accountId);
+            BalanceDto balanceDetails = balanceService.createBalanceForAccount(balance);
+            return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
+        }else{
+            throw new AccountIdMismatchException(accountId,"account id in url and request body should be same");
+        }
     }
 
     @GetMapping("accounts/{accountId}/balances/accountBalance")
-    public ResponseEntity<BalanceDto> getBalanceDetails(@PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
+    public ResponseEntity<BalanceDto> getBalanceAccountDetails(@PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
         List<Account> account = null;
         ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
         account = accountList.getBody();

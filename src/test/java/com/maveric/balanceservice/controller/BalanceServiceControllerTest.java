@@ -171,7 +171,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
        Balance balance = new Balance();
        balance.setCurrency(Currency.INR);
-       balance.setAccountId("1");
+       balance.setAccountId("4");
        balance.setAmount("200");
         return balance;
     }
