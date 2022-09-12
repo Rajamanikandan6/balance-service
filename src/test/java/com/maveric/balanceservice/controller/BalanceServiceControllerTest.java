@@ -76,9 +76,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
     @Test
     void shouldReturnInternalServerWhenDbReturnsErrorForGetBalances() throws Exception{
         when(accountFeignService.getAccountsbyId("1")).thenReturn(getSampleAccount());
-       doThrow(new IllegalArgumentException()).when(balanceService.getAllBalance(any(),any(),any()));
-        mvc.perform(get(API_V1_BALANCE+"?page=1&pageSize=10").header("userId",1))
-                .andExpect(status().isNotFound())
+       when(balanceService.getAllBalance("1",0,10)).thenThrow(new IllegalArgumentException());
+        mvc.perform(get(API_V1_BALANCE+"?page=-1").header("userId",1))
+                .andExpect(status().is5xxServerError())
                 .andDo(print());
     }
     @Test

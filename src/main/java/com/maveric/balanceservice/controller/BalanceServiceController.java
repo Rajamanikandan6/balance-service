@@ -73,18 +73,29 @@ public class BalanceServiceController {
         List<Account> account = null;
         ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
         account = accountList.getBody();
+        System.out.println(account);
         balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
         BalanceDto balanceDetails = balanceService.createBalance(balance);
         return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
     }
 
-    @GetMapping("accounts/{accountId}/accountBalance")
-    public ResponseEntity<List<BalanceDto>> getBalanceDetails(@PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
+    @PostMapping("/accounts/{accountId}/balances/balancesAccount")
+    public ResponseEntity<BalanceDto> createBalanceForAccount(@Valid @RequestBody Balance balance, @PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
         List<Account> account = null;
         ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
         account = accountList.getBody();
         balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
-        List<BalanceDto> balanceDto = balanceService.getBalanceForPerticularAccount(accountId);
+        BalanceDto balanceDetails = balanceService.createBalanceForAccount(balance);
+        return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
+    }
+
+    @GetMapping("accounts/{accountId}/balances/accountBalance")
+    public ResponseEntity<BalanceDto> getBalanceDetails(@PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
+        List<Account> account = null;
+        ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
+        account = accountList.getBody();
+        balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
+        BalanceDto balanceDto = balanceService.getBalanceForParticularAccount(accountId);
         return ResponseEntity.status(HttpStatus.OK).body(balanceDto);
     }
 }

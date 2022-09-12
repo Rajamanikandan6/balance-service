@@ -2,6 +2,7 @@ package com.maveric.balanceservice.service;
 
 import com.maveric.balanceservice.BalanceServiceApplication;
 import com.maveric.balanceservice.exception.AccountIdMismatchException;
+import com.maveric.balanceservice.exception.BalanceAlreadyExistException;
 import com.maveric.balanceservice.exception.BalanceNotFoundException;
 import com.maveric.balanceservice.model.Account;
 import com.maveric.balanceservice.model.Balance;
@@ -83,9 +84,17 @@ public class BalanceService {
             throw new AccountIdMismatchException(account_id);
         }
     }
-    public List<BalanceDto> getBalanceForPerticularAccount(String accountId){
-        List<Balance> balances = balanceRepository.findAllByAccountId(accountId);
-        return modelDtoConverter.entityToDtoList(balances);
+    public BalanceDto getBalanceForParticularAccount(String accountId){
+        Balance balances = balanceRepository.findByAccountId(accountId);
+        return modelDtoConverter.entityToDto(balances);
 
+    }
+
+    public BalanceDto createBalanceForAccount(Balance balance){
+        Balance balance1=balanceRepository.findByAccountId(balance.getAccountId());
+        if(balance1 == null)
+            return modelDtoConverter.entityToDto(balanceRepository.save(balance));
+
+        throw new BalanceAlreadyExistException(balance.getAccountId());
     }
 }

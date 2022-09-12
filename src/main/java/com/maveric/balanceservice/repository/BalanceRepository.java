@@ -21,5 +21,5 @@ public interface BalanceRepository extends MongoRepository<Balance,String> {
     @Query("{'_id':?0,'accountId':?1}")
     Optional<Balance> findByAccountIdAndBalanceId(String balanceId,String accountId);
 
-    List<Balance> findAllByAccountId(String accountId);
+    Balance findByAccountId(String accountId);
 }
