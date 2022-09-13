@@ -36,7 +36,7 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(BalanceAlreadyExistException.class)
-    public ResponseEntity<Error>  accountBalanceError(BalanceAlreadyExistException balanceAlreadyExistException){
+    public ResponseEntity<Error>  handleDuplicateInput(BalanceAlreadyExistException balanceAlreadyExistException){
         Error error = getError(balanceAlreadyExistException.getMessage(),String.valueOf(HttpStatus.BAD_REQUEST.value()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }

@@ -159,7 +159,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
     @Test
     void shouldReturnInternalServerWhenDbReturnsErrorForCreate() throws Exception{
         when(accountFeignService.getAccountsbyId("1")).thenReturn(getSampleAccount());
-        when(balanceService.createBalance(Mockito.any(Balance.class))).thenThrow(new IllegalArgumentException());
+        when(balanceService.createBalanceForAccount(Mockito.any(Balance.class))).thenThrow(new IllegalArgumentException());
         mvc.perform(post(API_V1_BALANCE).header("userId",1).contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(getSampleBalance())))
                 .andExpect(status().isInternalServerError())
                 .andDo(print());

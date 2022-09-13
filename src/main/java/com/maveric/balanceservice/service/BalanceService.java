@@ -1,6 +1,5 @@
 package com.maveric.balanceservice.service;
 
-import com.maveric.balanceservice.BalanceServiceApplication;
 import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.exception.BalanceAlreadyExistException;
 import com.maveric.balanceservice.exception.BalanceNotFoundException;
@@ -56,10 +55,9 @@ public class BalanceService {
         Optional<Balance> balanceFromDb = balanceRepository.findById(balanceId);
             if(balanceFromDb.isPresent()) {
             Balance newBal = balanceFromDb.get();
-            String newAmount =Integer.toString(Integer.parseInt(balance.getAmount()) + Integer.parseInt(newBal.getAmount()));
             newBal.setAccountId(balance.getAccountId());
             newBal.setCurrency(balance.getCurrency());
-            newBal.setAmount(newAmount);
+            newBal.setAmount(balance.getAmount());
 
 
             return modelDtoConverter.entityToDto(balanceRepository.save(newBal));

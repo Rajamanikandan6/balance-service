@@ -1,5 +1,6 @@
 package com.maveric.balanceservice.controller;
 
+import com.maveric.balanceservice.constant.ErrorMessageConstants;
 import com.maveric.balanceservice.dto.BalanceDto;
 import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.feignclient.AccountFeignService;
@@ -70,26 +71,25 @@ public class BalanceServiceController {
             BalanceDto balanceDetails = balanceService.updateBalance(balance, balanceId);
             return ResponseEntity.status(HttpStatus.OK).body(balanceDetails);
         }else{
-            throw new AccountIdMismatchException(accountId,"account id in url and request body should be same");
+            throw new AccountIdMismatchException(accountId, ErrorMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
-    @PostMapping("/accounts/{accountId}/balances")
+    @PostMapping("/accounts/{accountId}/balances/balancesAccount")
     public ResponseEntity<BalanceDto> createBalance(@Valid @RequestBody Balance balance, @PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
         if(balance.getAccountId().equals(accountId)) {
             List<Account> account = null;
             ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
             account = accountList.getBody();
-            System.out.println(account);
             balanceService.findAccountIdBelongsToCurrentUser(account, accountId);
             BalanceDto balanceDetails = balanceService.createBalance(balance);
             return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
         }
         else{
-            throw new AccountIdMismatchException(accountId,"account id in url and request body should be same");
+            throw new AccountIdMismatchException(accountId,ErrorMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
 
-    @PostMapping("/accounts/{accountId}/balances/balancesAccount")
+    @PostMapping("/accounts/{accountId}/balances")
     public ResponseEntity<BalanceDto> createBalanceForAccount(@Valid @RequestBody Balance balance, @PathVariable String accountId,@RequestHeader(value = "userId") String userId) {
         if(balance.getAccountId().equals(accountId)) {
             List<Account> account = null;
@@ -99,7 +99,7 @@ public class BalanceServiceController {
             BalanceDto balanceDetails = balanceService.createBalanceForAccount(balance);
             return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
         }else{
-            throw new AccountIdMismatchException(accountId,"account id in url and request body should be same");
+            throw new AccountIdMismatchException(accountId,ErrorMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
 
