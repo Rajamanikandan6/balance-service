@@ -7,6 +7,8 @@ import com.maveric.balanceservice.feignclient.AccountFeignService;
 import com.maveric.balanceservice.model.Account;
 import com.maveric.balanceservice.model.Balance;
 import com.maveric.balanceservice.service.BalanceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,8 @@ public class BalanceServiceController {
     @Autowired
     AccountFeignService accountFeignService;
 
+    private static final Logger logger = LoggerFactory.getLogger(BalanceServiceController.class);
+
     @GetMapping("/accounts/{accountId}/balances/{balanceId}")
     public ResponseEntity<Object> getBalanceDetails(@PathVariable String accountId , @PathVariable String balanceId,@RequestHeader(value = "userId") String userId) {
         List<Account> account = null;
@@ -38,6 +42,7 @@ public class BalanceServiceController {
         account = accountList.getBody();
         balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
         String balance = balanceService.getBalance(balanceId,accountId);
+        logger.info("getBalanceDetails-> balance fetched for accountId {}",accountId);
         return ResponseEntity.status(HttpStatus.OK).body(balance);
     }
     @GetMapping("/accounts/{accountId}/balances")
@@ -47,6 +52,7 @@ public class BalanceServiceController {
         account = accountList.getBody();
         balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
         List<BalanceDto> balance = balanceService.getAllBalance(accountId,page,pageSize);
+        logger.info("getAllBalance-> all balance fetched for accountId {}",accountId);
         return ResponseEntity.status(HttpStatus.OK).body(balance);
     }
 
@@ -57,6 +63,7 @@ public class BalanceServiceController {
         account = accountList.getBody();
         balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
         String desc = balanceService.deleteBalance(balanceId,accountId);
+        logger.info("deleteBalance-> Balance deleted for accountId {}",accountId);
         return ResponseEntity.status(HttpStatus.OK).body(desc);
     }
 
@@ -69,8 +76,10 @@ public class BalanceServiceController {
             balanceService.findAccountIdBelongsToCurrentUser(account, accountId);
             balance.setAccountId(accountId);
             BalanceDto balanceDetails = balanceService.updateBalance(balance, balanceId);
+            logger.info("updateBalance-> balance updated for accountID {}",accountId);
             return ResponseEntity.status(HttpStatus.OK).body(balanceDetails);
         }else{
+            logger.error("updateBalance-> accountId given in request body and url are not same");
             throw new AccountIdMismatchException(accountId, ErrorMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
@@ -82,9 +91,11 @@ public class BalanceServiceController {
             account = accountList.getBody();
             balanceService.findAccountIdBelongsToCurrentUser(account, accountId);
             BalanceDto balanceDetails = balanceService.createBalance(balance);
+            logger.info("createBalance-> balance created for accountID {}",accountId);
             return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
         }
         else{
+            logger.error("createBalance-> accountId given in request body and url are not same");
             throw new AccountIdMismatchException(accountId,ErrorMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
@@ -97,8 +108,10 @@ public class BalanceServiceController {
             account = accountList.getBody();
             balanceService.findAccountIdBelongsToCurrentUser(account, accountId);
             BalanceDto balanceDetails = balanceService.createBalanceForAccount(balance);
+            logger.info("createBalanceForAccount-> balance created for accountID {}",accountId);
             return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
         }else{
+            logger.error("createBalanceForAccount-> accountId given in request body and url are not same");
             throw new AccountIdMismatchException(accountId,ErrorMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
@@ -110,6 +123,7 @@ public class BalanceServiceController {
         account = accountList.getBody();
         balanceService.findAccountIdBelongsToCurrentUser(account,accountId);
         BalanceDto balanceDto = balanceService.getBalanceForParticularAccount(accountId);
+        logger.info("getBalanceAccountDetails-> balance detail for accountID {}",accountId);
         return ResponseEntity.status(HttpStatus.OK).body(balanceDto);
     }
 }
