@@ -1,6 +1,6 @@
 package com.maveric.balanceservice.controller;
 
-import com.maveric.balanceservice.constant.ErrorMessageConstants;
+import com.maveric.balanceservice.constant.ErrorSuccessMessageConstants;
 import com.maveric.balanceservice.dto.BalanceDto;
 import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.feignclient.AccountFeignService;
@@ -80,7 +80,7 @@ public class BalanceServiceController {
             return ResponseEntity.status(HttpStatus.OK).body(balanceDetails);
         }else{
             logger.error("updateBalance-> accountId given in request body and url are not same");
-            throw new AccountIdMismatchException(accountId, ErrorMessageConstants.ACCOUNT_ID_MISMATCH);
+            throw new AccountIdMismatchException(accountId, ErrorSuccessMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
     @PostMapping("/accounts/{accountId}/balances/balancesAccount")
@@ -96,7 +96,7 @@ public class BalanceServiceController {
         }
         else{
             logger.error("createBalance-> accountId given in request body and url are not same");
-            throw new AccountIdMismatchException(accountId,ErrorMessageConstants.ACCOUNT_ID_MISMATCH);
+            throw new AccountIdMismatchException(accountId, ErrorSuccessMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
 
@@ -112,7 +112,7 @@ public class BalanceServiceController {
             return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
         }else{
             logger.error("createBalanceForAccount-> accountId given in request body and url are not same");
-            throw new AccountIdMismatchException(accountId,ErrorMessageConstants.ACCOUNT_ID_MISMATCH);
+            throw new AccountIdMismatchException(accountId, ErrorSuccessMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
 

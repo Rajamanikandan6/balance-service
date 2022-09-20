@@ -85,8 +85,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
     @Test
     void shouldReturnMessageWhenDeleteBalanceInvoked() throws Exception {
-        when(mockedBalanceRepository.findByAccountIdAndBalanceId("631061c4c45f78545a1ed042","1")).thenReturn(Optional.of(getSampleBalance()));
-        willDoNothing().given(mockedBalanceRepository).deleteById("631061c4c45f78545a1ed042");
+        when(mockedBalanceRepository.findByAccountIdAndBalanceIdWithDelete("631061c4c45f78545a1ed042","1")).thenReturn(Optional.of(getSampleBalance()));
 
         String message = balanceService.deleteBalance("631061c4c45f78545a1ed042","1");
 

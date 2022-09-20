@@ -1,5 +1,6 @@
 package com.maveric.balanceservice.service;
 
+import com.maveric.balanceservice.constant.ErrorSuccessMessageConstants;
 import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.exception.BalanceAlreadyExistException;
 import com.maveric.balanceservice.exception.BalanceNotFoundException;
@@ -14,7 +15,6 @@ import com.maveric.balanceservice.converter.ModelDtoConverter;
 import com.maveric.balanceservice.dto.BalanceDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import com.maveric.balanceservice.constant.SuccessMessageConstant;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,13 +28,10 @@ public class BalanceService {
     ModelDtoConverter modelDtoConverter;
 
     public String getBalance(String balanceId,String accountId) {
-        Optional<Balance> bal = balanceRepository.findByAccountIdAndBalanceId(balanceId, accountId);
-        if (bal.isPresent()) {
-            Balance acctBalance = bal.get();
-            return acctBalance.getAmount();
-        } else {
-            throw new BalanceNotFoundException(balanceId);
-        }
+
+        Balance balance = balanceRepository.findByAccountIdAndBalanceId(balanceId, accountId).orElseThrow(() -> new BalanceNotFoundException(balanceId));
+        return balance.getAmount();
+
     }
 
     public List<BalanceDto> getAllBalance(String accountId, int page, int pageSize){
@@ -46,9 +43,8 @@ public class BalanceService {
 
 
     public String deleteBalance(String balanceId,String accountId){
-        balanceRepository.findByAccountIdAndBalanceId(balanceId,accountId).orElseThrow(() -> new BalanceNotFoundException(balanceId));
-        balanceRepository.deleteById(balanceId);
-        return SuccessMessageConstant.DELETE_SUCCESS_MESSAGE;
+        balanceRepository.findByAccountIdAndBalanceIdWithDelete(balanceId,accountId).orElseThrow(() -> new BalanceNotFoundException(balanceId));
+        return ErrorSuccessMessageConstants.DELETE_SUCCESS_MESSAGE;
     }
 
     public BalanceDto updateBalance(Balance balance, String balanceId){
