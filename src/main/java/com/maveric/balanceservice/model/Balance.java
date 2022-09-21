@@ -21,11 +21,11 @@ public class Balance {
     private String id;
 
 
-    @NotBlank
+    @NotBlank(message = "accountId shouldn't be empty")
     private String accountId;
 
 
-    @NotBlank
+    @NotBlank(message = "amount shouldn't be empty")
     @Pattern(regexp = "^[+]?(\\d+\\.?\\d*|\\.\\d+)$",message = "Invalid amount given")
     private String amount;
 

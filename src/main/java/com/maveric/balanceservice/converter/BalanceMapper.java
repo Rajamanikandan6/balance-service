@@ -8,19 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ModelDtoConverter {
-    public List<BalanceDto> entityToDtoList(List<Balance> user) {
+public class BalanceMapper {
+    public List<BalanceDto> entityToDtoList(List<Balance> balances) {
         List<BalanceDto> balanceDto = new ArrayList<>();
-        user.stream().forEach(b -> {
-            BalanceDto singleBalace = new BalanceDto();
-            singleBalace.setCreatedAt(b.getCreatedAt());
-            singleBalace.setId(b.getId());
-            singleBalace.setUpdatedAt(b.getUpdatedAt());
-            singleBalace.setAmount(b.getAmount());
-            singleBalace.setCurrency(b.getCurrency());
-            singleBalace.setAccountId(b.getAccountId());
+        balances.stream().forEach(balance -> {
+            BalanceDto singleBalance = new BalanceDto();
+            singleBalance.setCreatedAt(balance.getCreatedAt());
+            singleBalance.setId(balance.getId());
+            singleBalance.setUpdatedAt(balance.getUpdatedAt());
+            singleBalance.setAmount(balance.getAmount());
+            singleBalance.setCurrency(balance.getCurrency());
+            singleBalance.setAccountId(balance.getAccountId());
 
-            balanceDto.add(singleBalace);
+            balanceDto.add(singleBalance);
         });
         return balanceDto;
     }

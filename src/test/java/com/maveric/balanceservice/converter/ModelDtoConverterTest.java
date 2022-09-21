@@ -14,19 +14,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ModelDtoConverterTest {
 
     @InjectMocks
-    private ModelDtoConverter modelDtoConverter;
+    private BalanceMapper balanceMapper;
 
     @Test
     void handleEntityToDto() {
         Balance balance =getSampleBalance();
-        BalanceDto balanceDto = modelDtoConverter.entityToDto(balance);
+        BalanceDto balanceDto = balanceMapper.entityToDto(balance);
         assertNotNull(balanceDto.getAmount());
     }
 
     @Test
     void handleDtoToEntity() {
         BalanceDto balanceDto =getSampleDtoBalance();
-        Balance balance = modelDtoConverter.dtoToEntity(balanceDto);
+        Balance balance = balanceMapper.dtoToEntity(balanceDto);
         assertNotNull(balance.getAmount());
     }
 
