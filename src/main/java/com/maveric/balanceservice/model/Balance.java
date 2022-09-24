@@ -1,6 +1,7 @@
 package com.maveric.balanceservice.model;
 
 import com.maveric.balanceservice.constant.Currency;
+import com.maveric.balanceservice.constant.ErrorSuccessMessageConstants;
 import com.maveric.balanceservice.validation.CurrencyValidation;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
 
+
 @Getter
 @Setter
 @Document(collection = "balance")
@@ -21,12 +23,12 @@ public class Balance {
     private String id;
 
 
-    @NotBlank(message = "accountId shouldn't be empty")
+    @NotBlank(message = ErrorSuccessMessageConstants.ACCOUNT_ID_NOT_BLANK)
     private String accountId;
 
 
-    @NotBlank(message = "amount shouldn't be empty")
-    @Pattern(regexp = "^[+]?(\\d+\\.?\\d*|\\.\\d+)$",message = "Invalid amount given")
+    @NotBlank(message = ErrorSuccessMessageConstants.AMOUNT_NOT_BLANK)
+    @Pattern(regexp = ErrorSuccessMessageConstants.AMOUNT_REGEX,message = ErrorSuccessMessageConstants.AMOUNT_INVALID)
     private String amount;
 
     @Enumerated(EnumType.STRING)

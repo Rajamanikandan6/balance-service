@@ -40,7 +40,7 @@ public class BalanceServiceController {
         ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
         balanceService.findAccountIdBelongsToCurrentUser(accountList.getBody(),accountId);
         String balance = balanceService.getBalance(balanceId,accountId);
-        logger.info("getBalanceDetails-> balance fetched for accountId {}",accountId);
+        logger.info(ErrorSuccessMessageConstants.GET_BALANCE_LOG+accountId);
         return ResponseEntity.status(HttpStatus.OK).body(balance);
     }
     @GetMapping("/accounts/{accountId}/balances")
@@ -48,7 +48,7 @@ public class BalanceServiceController {
         ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
         balanceService.findAccountIdBelongsToCurrentUser(accountList.getBody(),accountId);
         List<BalanceDto> balance = balanceService.getAllBalance(accountId,page,pageSize);
-        logger.info("getAllBalance-> all balance fetched for accountId {}",accountId);
+        logger.info(ErrorSuccessMessageConstants.GET_ALL_BALANCE_LOG+accountId);
         return ResponseEntity.status(HttpStatus.OK).body(balance);
     }
 
@@ -57,7 +57,7 @@ public class BalanceServiceController {
         ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
         balanceService.findAccountIdBelongsToCurrentUser(accountList.getBody(),accountId);
         String desc = balanceService.deleteBalance(balanceId,accountId);
-        logger.info("deleteBalance-> Balance deleted for accountId {}",accountId);
+        logger.info(ErrorSuccessMessageConstants.DELETE_BALANCE_LOG+accountId);
         return ResponseEntity.status(HttpStatus.OK).body(desc);
     }
 
@@ -68,10 +68,10 @@ public class BalanceServiceController {
             balanceService.findAccountIdBelongsToCurrentUser(accountList.getBody(), accountId);
             balance.setAccountId(accountId);
             BalanceDto balanceDetails = balanceService.updateBalance(balance, balanceId);
-            logger.info("updateBalance-> balance updated for accountID {}",accountId);
+            logger.info(ErrorSuccessMessageConstants.UPDATE_BALANCE_LOG+accountId);
             return ResponseEntity.status(HttpStatus.OK).body(balanceDetails);
         }else{
-            logger.error("updateBalance-> accountId given in request body and url are not same");
+            logger.error(ErrorSuccessMessageConstants.UPDATE_BALANCE_ERROR_LOG);
             throw new AccountIdMismatchException(accountId, ErrorSuccessMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
@@ -81,11 +81,11 @@ public class BalanceServiceController {
             ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
             balanceService.findAccountIdBelongsToCurrentUser(accountList.getBody(), accountId);
             BalanceDto balanceDetails = balanceService.createBalance(balance);
-            logger.info("createBalance-> balance created for accountID {}",accountId);
+            logger.info(ErrorSuccessMessageConstants.CREATE_BALANCE_LOG+accountId);
             return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
         }
         else{
-            logger.error("createBalance-> accountId given in request body and url are not same");
+            logger.error(ErrorSuccessMessageConstants.CREATE_BALANCE_ERROR_LOG);
             throw new AccountIdMismatchException(accountId, ErrorSuccessMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
@@ -96,10 +96,10 @@ public class BalanceServiceController {
             ResponseEntity<List<Account>> accountList = accountFeignService.getAccountsbyId(userId);
             balanceService.findAccountIdBelongsToCurrentUser(accountList.getBody(), accountId);
             BalanceDto balanceDetails = balanceService.createBalanceForAccount(balance);
-            logger.info("createBalanceForAccount-> balance created for accountID {}",accountId);
+            logger.info(ErrorSuccessMessageConstants.CREATEV1_BALANCE_LOG+accountId);
             return ResponseEntity.status(HttpStatus.CREATED).body(balanceDetails);
         }else{
-            logger.error("createBalanceForAccount-> accountId given in request body and url are not same");
+            logger.error(ErrorSuccessMessageConstants.CREATEV1_BALANCE_ERROR_LOG);
             throw new AccountIdMismatchException(accountId, ErrorSuccessMessageConstants.ACCOUNT_ID_MISMATCH);
         }
     }
