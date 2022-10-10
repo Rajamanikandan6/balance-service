@@ -1,7 +1,7 @@
 package com.maveric.balanceservice.service;
 
 import com.maveric.balanceservice.constant.Currency;
-import com.maveric.balanceservice.converter.ModelDtoConverter;
+import com.maveric.balanceservice.converter.BalanceMapper;
 import com.maveric.balanceservice.dto.BalanceDto;
 import com.maveric.balanceservice.model.Balance;
 import com.maveric.balanceservice.repository.BalanceRepository;
@@ -20,7 +20,6 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
     private BalanceRepository mockedBalanceRepository;
 
     @Mock
-    private ModelDtoConverter modelDtoConverter;
+    private BalanceMapper balanceMapper;
 
     @Mock
     private Page page;
@@ -54,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.*;
     void shouldReturnBalancesWhenGetBalancesInvoked() throws Exception {
         Page<Balance> pageResponse = new PageImpl<>(Arrays.asList(getSampleBalance(),getSampleBalance()));
         when(mockedBalanceRepository.findAllByAccountId(any(Pageable.class),any())).thenReturn(pageResponse);
-        when(modelDtoConverter.entityToDtoList(any())).thenReturn(Arrays.asList(getSampleDtoBalance(),getSampleDtoBalance()));
+        when(balanceMapper.entityToDtoList(any())).thenReturn(Arrays.asList(getSampleDtoBalance(),getSampleDtoBalance()));
 
         List<BalanceDto> balance = balanceService.getAllBalance("1",1,10);
         assertNotNull(balance);
@@ -63,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     void shouldReturnUserWhenUpdateBalanceInvoked() throws Exception {
         when(mockedBalanceRepository.findById("631061c4c45f78545a1ed042")).thenReturn(Optional.ofNullable(getSampleBalance()));
-        when(modelDtoConverter.entityToDto(mockedBalanceRepository.save(getSampleBalance()))).thenReturn(getSampleDtoBalance());
+        when(balanceMapper.entityToDto(mockedBalanceRepository.save(getSampleBalance()))).thenReturn(getSampleDtoBalance());
 
         BalanceDto balance = balanceService.updateBalance(getSampleBalance(),"631061c4c45f78545a1ed042");
         assertNotNull(balance);
@@ -74,7 +73,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     void shouldReturnUserWhenCreateBalanceInvoked() throws Exception {
         when(mockedBalanceRepository.save(any(Balance.class))).thenReturn(getSampleBalance());
-        when(modelDtoConverter.entityToDto(any(Balance.class))).thenReturn(getSampleDtoBalance());
+        when(balanceMapper.entityToDto(any(Balance.class))).thenReturn(getSampleDtoBalance());
 
         BalanceDto balance = balanceService.createBalance(getSampleBalance());
 
@@ -85,8 +84,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
     @Test
     void shouldReturnMessageWhenDeleteBalanceInvoked() throws Exception {
-        when(mockedBalanceRepository.findByAccountIdAndBalanceId("631061c4c45f78545a1ed042","1")).thenReturn(Optional.of(getSampleBalance()));
-        willDoNothing().given(mockedBalanceRepository).deleteById("631061c4c45f78545a1ed042");
+        when(mockedBalanceRepository.findByAccountIdAndBalanceIdWithDelete("631061c4c45f78545a1ed042","1")).thenReturn(Optional.of(getSampleBalance()));
 
         String message = balanceService.deleteBalance("631061c4c45f78545a1ed042","1");
 

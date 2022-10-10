@@ -1,6 +1,6 @@
 package com.maveric.balanceservice.model;
 
-import com.maveric.balanceservice.constant.Type;
+import com.maveric.balanceservice.constant.AccountType;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,7 +9,7 @@ import java.util.Date;
 public class Account {
     private String _id;
 
-    private Type type;
+    private AccountType accountType;
 
     private String customerId;
 

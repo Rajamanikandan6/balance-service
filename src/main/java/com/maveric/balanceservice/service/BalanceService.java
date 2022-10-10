@@ -1,5 +1,6 @@
 package com.maveric.balanceservice.service;
 
+import com.maveric.balanceservice.constant.ErrorSuccessMessageConstants;
 import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.exception.BalanceAlreadyExistException;
 import com.maveric.balanceservice.exception.BalanceNotFoundException;
@@ -10,11 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import com.maveric.balanceservice.converter.ModelDtoConverter;
+import com.maveric.balanceservice.converter.BalanceMapper;
 import com.maveric.balanceservice.dto.BalanceDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import com.maveric.balanceservice.constant.SuccessMessageConstant;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,30 +25,26 @@ public class BalanceService {
     BalanceRepository balanceRepository;
 
     @Autowired
-    ModelDtoConverter modelDtoConverter;
+    BalanceMapper balanceMapper;
 
     public String getBalance(String balanceId,String accountId) {
-        Optional<Balance> bal = balanceRepository.findByAccountIdAndBalanceId(balanceId, accountId);
-        if (bal.isPresent()) {
-            Balance acctBalance = bal.get();
-            return acctBalance.getAmount();
-        } else {
-            throw new BalanceNotFoundException(balanceId);
-        }
+
+        Balance balance = balanceRepository.findByAccountIdAndBalanceId(balanceId, accountId).orElseThrow(() -> new BalanceNotFoundException(balanceId));
+        return balance.getAmount();
+
     }
 
     public List<BalanceDto> getAllBalance(String accountId, int page, int pageSize){
 
         Page<Balance> balances = balanceRepository.findAllByAccountId(PageRequest.of(page, pageSize),accountId);
         List<Balance> listBalance = balances.getContent();
-        return modelDtoConverter.entityToDtoList(listBalance);
+        return balanceMapper.entityToDtoList(listBalance);
     }
 
 
     public String deleteBalance(String balanceId,String accountId){
-        balanceRepository.findByAccountIdAndBalanceId(balanceId,accountId).orElseThrow(() -> new BalanceNotFoundException(balanceId));
-        balanceRepository.deleteById(balanceId);
-        return SuccessMessageConstant.DELETE_SUCCESS_MESSAGE;
+        balanceRepository.findByAccountIdAndBalanceIdWithDelete(balanceId,accountId).orElseThrow(() -> new BalanceNotFoundException(balanceId));
+        return ErrorSuccessMessageConstants.DELETE_SUCCESS_MESSAGE;
     }
 
     public BalanceDto updateBalance(Balance balance, String balanceId){
@@ -60,7 +56,7 @@ public class BalanceService {
             newBal.setAmount(balance.getAmount());
 
 
-            return modelDtoConverter.entityToDto(balanceRepository.save(newBal));
+            return balanceMapper.entityToDto(balanceRepository.save(newBal));
         }else{
                 throw  new BalanceNotFoundException(balanceId);
             }
@@ -68,7 +64,7 @@ public class BalanceService {
 
     public BalanceDto createBalance(Balance balance){
 
-       return modelDtoConverter.entityToDto(balanceRepository.save(balance));
+       return balanceMapper.entityToDto(balanceRepository.save(balance));
     }
 
     public void findAccountIdBelongsToCurrentUser(List<Account> account,String account_id){
@@ -84,14 +80,14 @@ public class BalanceService {
     }
     public BalanceDto getBalanceForParticularAccount(String accountId){
         Balance balances = balanceRepository.findByAccountId(accountId);
-        return modelDtoConverter.entityToDto(balances);
+        return balanceMapper.entityToDto(balances);
 
     }
 
     public BalanceDto createBalanceForAccount(Balance balance){
         Balance balance1=balanceRepository.findByAccountId(balance.getAccountId());
         if(balance1 == null)
-            return modelDtoConverter.entityToDto(balanceRepository.save(balance));
+            return balanceMapper.entityToDto(balanceRepository.save(balance));
 
         throw new BalanceAlreadyExistException(balance.getAccountId());
     }

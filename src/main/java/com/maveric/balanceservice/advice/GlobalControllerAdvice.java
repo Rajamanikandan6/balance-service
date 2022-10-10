@@ -1,6 +1,6 @@
 package com.maveric.balanceservice.advice;
 
-import com.maveric.balanceservice.constant.ErrorMessageConstants;
+import com.maveric.balanceservice.constant.ErrorSuccessMessageConstants;
 import com.maveric.balanceservice.dto.Error;
 import com.maveric.balanceservice.exception.AccountIdMismatchException;
 import com.maveric.balanceservice.exception.BalanceAlreadyExistException;
@@ -30,21 +30,21 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(BalanceNotFoundException.class)
     public ResponseEntity<Error>  balanceNotFound(BalanceNotFoundException balanceNotFoundException){
-        Error error = getError(balanceNotFoundException.getMessage(),String.valueOf(HttpStatus.NOT_FOUND.value()));
+        Error error = getError(balanceNotFoundException.getMessage(),String.valueOf(HttpStatus.NOT_FOUND));
         logger.error(balanceNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
     @ExceptionHandler(AccountIdMismatchException.class)
     public ResponseEntity<Error>  accountUserMismatch(AccountIdMismatchException accountIdMismatchException){
-        Error error = getError(accountIdMismatchException.getMessage(),String.valueOf(HttpStatus.NOT_FOUND.value()));
+        Error error = getError(accountIdMismatchException.getMessage(),String.valueOf(HttpStatus.NOT_FOUND));
         logger.error(accountIdMismatchException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
     @ExceptionHandler(BalanceAlreadyExistException.class)
     public ResponseEntity<Error>  handleDuplicateInput(BalanceAlreadyExistException balanceAlreadyExistException){
-        Error error = getError(balanceAlreadyExistException.getMessage(),String.valueOf(HttpStatus.BAD_REQUEST.value()));
+        Error error = getError(balanceAlreadyExistException.getMessage(),String.valueOf(HttpStatus.BAD_REQUEST));
         logger.error(balanceAlreadyExistException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
@@ -66,7 +66,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Error>  handleEnumException(HttpMessageNotReadableException httpMessageNotReadableException){
-        Error error = getError(ErrorMessageConstants.CURRENCY_ERROR,String.valueOf(HttpStatus.BAD_REQUEST));
+        Error error = getError(ErrorSuccessMessageConstants.CURRENCY_ERROR,String.valueOf(HttpStatus.BAD_REQUEST));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 

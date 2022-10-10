@@ -2,8 +2,7 @@ package com.maveric.balanceservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maveric.balanceservice.constant.Currency;
-import com.maveric.balanceservice.constant.Type;
-import com.maveric.balanceservice.dto.BalanceDto;
+import com.maveric.balanceservice.constant.AccountType;
 import com.maveric.balanceservice.exception.BalanceNotFoundException;
 import com.maveric.balanceservice.feignclient.AccountFeignService;
 import com.maveric.balanceservice.model.Account;
@@ -23,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.eq;
@@ -181,10 +179,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
         List<Account> accountList = new ArrayList<>();
         Account account = new Account();
         account.setCustomerId("1");
-        account.setType(Type.CURRENT);
+        account.setAccountType(AccountType.CURRENT);
         Account account1 = new Account();
         account1.setCustomerId("2");
-        account1.setType(Type.CURRENT);
+        account1.setAccountType(AccountType.CURRENT);
 
         accountList.add(account1);
         accountList.add(account);

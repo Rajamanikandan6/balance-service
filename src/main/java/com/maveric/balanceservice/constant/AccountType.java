@@ -1,6 +1,6 @@
 package com.maveric.balanceservice.constant;
 
-public enum Type {
+public enum AccountType {
     CURRENT,
     SAVINGS
 }
